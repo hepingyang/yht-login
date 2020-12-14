@@ -21,7 +21,7 @@ public class SwaggerConfig {
                 .apiInfo(restAPIInfo())
                 .groupName("demo")
                 .select()
-               // .apis(RequestHandlerSelectors.any())  // 注意修改此处的包名
+                // .apis(RequestHandlerSelectors.any())  // 注意修改此处的包名
                 .apis(RequestHandlerSelectors.basePackage("com.yonyou.iuap.corp.demo.web"))//controller所在路径包
                 .paths(PathSelectors.any())
                 .build();
@@ -30,9 +30,9 @@ public class SwaggerConfig {
 
     private ApiInfo restAPIInfo() {
         return new ApiInfoBuilder()
-                .title("人员信息更新")
-                .description("更新人员信息手机号、任职结束日前、部门编码")
-                .contact(new Contact("hepy", "", "hepy@yonyou.com"))
+                .title("獲取友戶通臨時token")
+                .description("用於登陸跳轉驗證")
+                .contact(new Contact("聯系人", "", "xxx@walsin.com"))
                 .version("1.0")
                 .build();
     }
@@ -48,12 +48,5 @@ public class SwaggerConfig {
                 .build();
     }
 
-    private ApiInfo actuatorAPIInfo() {
-        return new ApiInfoBuilder()
-                .title("人员信息更新")
-                .description("test")
-                .contact(new Contact("hepy", "", "hepy@yonyou.com"))
-                .version("1.0")
-                .build();
-    }
+
 }

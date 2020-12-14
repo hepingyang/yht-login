@@ -24,33 +24,37 @@ public class YhtInformation {
      * 获取临时token
      * @return
      */
-    @ApiOperation(value = "getToken", notes = "获取临时token")
+    @ApiOperation(value = "getToken", notes = "獲取臨時token")
     @GetMapping("/getToken")
     public Object  getToken(@RequestParam String userName, @RequestParam String passWord){
         String sha1Hex = DigestUtils.sha1Hex(passWord);
         String md5 = null;
+        Map<String,Object> map = new HashMap<>();
         try {
             md5 = EncoderByMd5(passWord);
+            Map<String, String> params = new HashMap<>();
+            params.put("username",userName);
+            params.put("shaPassword",sha1Hex);
+            params.put("md5Password",md5);
+            // String ssoToken = UserCenter.createSSOToken(params);
+            String result = UserCenter.generateAccessToken(userName, passWord,
+                    true,true);
+
+            if(null == JSONObject.parseObject(result).get("data")){
+                map.put("token", null);
+                map.put("msg", JSONObject.parseObject(result).get("msg"));
+                return map;
+            }
+            String accessToken = (String) JSONObject.parseObject(String.valueOf(JSONObject.parseObject(result).get("data"))).get("access_token");
+            String loginTokenByAccessToken = UserCenter.getLoginTokenByAccessToken(accessToken);
+            map.put("token",JSONObject.parseObject(loginTokenByAccessToken).get("token"));
+            map.put("msg","生成token成功");
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        Map<String, String> params = new HashMap<>();
-        params.put("username",userName);
-        params.put("shaPassword",sha1Hex);
-        params.put("md5Password",md5);
-       // String ssoToken = UserCenter.createSSOToken(params);
-        String result = UserCenter.generateAccessToken(userName, passWord,
-                true,true);
-        Map<String,Object> map = new HashMap<>();
-        if(null == JSONObject.parseObject(result).get("data")){
             map.put("token", null);
-            map.put("msg", JSONObject.parseObject(result).get("msg"));
-            return map;
+            map.put("msg", e.getMessage());
         }
-        String accessToken = (String) JSONObject.parseObject(String.valueOf(JSONObject.parseObject(result).get("data"))).get("access_token");
-        String loginTokenByAccessToken = UserCenter.getLoginTokenByAccessToken(accessToken);
-        map.put("token",JSONObject.parseObject(loginTokenByAccessToken).get("token"));
-        map.put("msg","生成token成功");
+
         return map;
     }
 
